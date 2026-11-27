@@ -10,12 +10,7 @@ import { join } from 'path'
 import { Readable, Transform } from 'stream'
 import { URL } from 'url'
 import { proto } from '../../WAProto/index.js'
-import {
-  DEFAULT_ORIGIN,
-  MEDIA_HKDF_KEY_MAPPING,
-  MEDIA_PATH_MAP,
-  NEWSLETTER_MEDIA_PATH_MAP
-} from '../Defaults'
+import { DEFAULT_ORIGIN, MEDIA_HKDF_KEY_MAPPING, MEDIA_PATH_MAP, NEWSLETTER_MEDIA_PATH_MAP } from '../Defaults'
 import type {
 	BaileysEventMap,
 	DownloadableMessage,
@@ -637,15 +632,17 @@ export const getWAUploadToServer = (
 		// send a query JSON to obtain the url & auth token to upload our media
 		let uploadInfo = await refreshMediaConn(false)
 
-		let urls: {
-  mediaUrl: string | undefined
-  directPath: string
-  meta_hmac?: string
-  ts?: number
-  fbid?: number
-  thumbnailDirectPath?: string
-  thumbnailSha256?: string
-} | undefined
+		let urls:
+			| {
+					mediaUrl: string | undefined
+					directPath: string
+					meta_hmac?: string
+					ts?: number
+					fbid?: number
+					thumbnailDirectPath?: string
+					thumbnailSha256?: string
+			  }
+			| undefined
 		const hosts = [...customUploadHosts, ...uploadInfo.hosts]
 
 		fileEncSha256B64 = encodeBase64EncodedStringForUpload(fileEncSha256B64)
@@ -654,15 +651,12 @@ export const getWAUploadToServer = (
 			logger.debug(`uploading to "${hostname}"`)
 
 			const auth = encodeURIComponent(uploadInfo.auth) // the auth token
-			const mediaPath =
-  (newsletter ? NEWSLETTER_MEDIA_PATH_MAP[mediaType] : undefined) ||
-  MEDIA_PATH_MAP[mediaType]
+			const mediaPath = (newsletter ? NEWSLETTER_MEDIA_PATH_MAP[mediaType] : undefined) || MEDIA_PATH_MAP[mediaType]
+			let url = `https://${hostname}${mediaPath}/${fileEncSha256B64}?auth=${auth}&token=${fileEncSha256B64}`
 
-let url = `https://${hostname}${mediaPath}/${fileEncSha256B64}?auth=${auth}&token=${fileEncSha256B64}`
-
-if (newsletter) {
-  url += '&server_thumb_gen=1'
-}
+			if (newsletter) {
+				url += '&server_thumb_gen=1'
+			}
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			let result: any
 			try {
@@ -683,21 +677,21 @@ if (newsletter) {
 				result = body.data
 
 		
-if (result?.url || result?.direct_path) {
-  urls = {
-    mediaUrl: result.url || result.direct_path,
-    directPath: result.direct_path,
-    meta_hmac: result.meta_hmac,
-    fbid: result.fbid,
-    ts: result.ts,
-    thumbnailDirectPath: result.thumbnail_info?.thumbnail_direct_path,
-    thumbnailSha256: result.thumbnail_info?.thumbnail_sha256
-  }
-  break
-} else {
-  uploadInfo = await refreshMediaConn(true)
-  throw new Error(`upload failed, reason: ${JSON.stringify(result)}`)
-}
+				if (result?.url || result?.direct_path) {
+					urls = {
+						mediaUrl: result.url || result.direct_path,
+						directPath: result.direct_path,
+						meta_hmac: result.meta_hmac,
+						fbid: result.fbid,
+						ts: result.ts,
+						thumbnailDirectPath: result.thumbnail_info?.thumbnail_direct_path,
+						thumbnailSha256: result.thumbnail_info?.thumbnail_sha256
+					}
+					break
+				} else {
+					uploadInfo = await refreshMediaConn(true)
+					throw new Error(`upload failed, reason: ${JSON.stringify(result)}`)
+				}
 			} catch (error: any) {
 				if (axios.isAxiosError(error)) {
 					result = error.response?.data
