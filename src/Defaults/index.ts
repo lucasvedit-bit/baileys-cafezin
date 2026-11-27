@@ -79,8 +79,8 @@ export const MEDIA_PATH_MAP: { [T in MediaType]?: string } = {
 	'md-app-state': '',
 	'md-msg-hist': '/mms/md-app-state'
 }
-  export const NEWSLETTER_MEDIA_PATH_MAP: { [T in MediaType]?: string } = {
-  image: '/newsletter/newsletter-image'
+export const NEWSLETTER_MEDIA_PATH_MAP: { [T in MediaType]?: string } = {
+	image: '/newsletter/newsletter-image'
 }
 export const MEDIA_HKDF_KEY_MAPPING = {
 	audio: 'Audio',
