@@ -657,7 +657,7 @@ export const getWAUploadToServer = (
 			if (newsletter) {
 				url += '&server_thumb_gen=1'
 			}
-			
+
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			let result: any
 			try {
