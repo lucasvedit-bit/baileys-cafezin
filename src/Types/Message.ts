@@ -303,8 +303,6 @@ export type MiscMessageGenerationOptions = MinimalRelayOptions & {
 export type MessageGenerationOptionsFromContent = MiscMessageGenerationOptions & {
 	userJid: string
 }
-
-
 export type WAMediaUploadFunction = (
 	encFilePath: string,
 	opts: {
@@ -322,8 +320,6 @@ export type WAMediaUploadFunction = (
 	thumbnailDirectPath?: string
 	thumbnailSha256?: string
 }>
-
-
 export type MediaGenerationOptions = {
 	logger?: ILogger
 	mediaTypeOverride?: MediaType
