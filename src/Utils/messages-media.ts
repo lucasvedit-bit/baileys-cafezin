@@ -657,6 +657,7 @@ export const getWAUploadToServer = (
 			if (newsletter) {
 				url += '&server_thumb_gen=1'
 			}
+			
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			let result: any
 			try {
@@ -675,8 +676,6 @@ export const getWAUploadToServer = (
 					maxContentLength: Infinity
 				})
 				result = body.data
-
-		
 				if (result?.url || result?.direct_path) {
 					urls = {
 						mediaUrl: result.url || result.direct_path,
