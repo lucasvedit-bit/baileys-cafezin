@@ -168,33 +168,27 @@ export const prepareWAMessageMedia = async (
 			logger
 		)
 
-const fileSha256B64 = fileSha256.toString('base64')
-const {
-  directPath,
-  thumbnailDirectPath,
-  thumbnailSha256
-} = await options.upload(filePath, {
-  fileEncSha256B64: fileSha256B64,
-  mediaType: mediaType,
-  timeoutMs: options.mediaUploadTimeoutMs,
-  newsletter: true
-})
+		const fileSha256B64 = fileSha256.toString('base64')
+		const { directPath, thumbnailDirectPath, thumbnailSha256 } = await options.upload(filePath, {
+			fileEncSha256B64: fileSha256B64,
+			mediaType: mediaType,
+			timeoutMs: options.mediaUploadTimeoutMs,
+			newsletter: true
+		})
 
-await fs.unlink(filePath)
+		await fs.unlink(filePath)
 
-const obj = WAProto.Message.fromObject({
-  [`${mediaType}Message`]: (MessageTypeProto as any)[mediaType].fromObject({
-    directPath,
-    fileSha256,
-    fileLength,
-    thumbnailDirectPath,
-    thumbnailSha256: thumbnailSha256
-      ? Buffer.from(thumbnailSha256, 'base64')
-      : undefined,
-    ...uploadData,
-    media: undefined
-  })
-})
+		const obj = WAProto.Message.fromObject({
+			[`${mediaType}Message`]: (MessageTypeProto as any)[mediaType].fromObject({
+				directPath,
+				fileSha256,
+				fileLength,
+				thumbnailDirectPath,
+				thumbnailSha256: thumbnailSha256 ? Buffer.from(thumbnailSha256, 'base64') : undefined,
+				...uploadData,
+				media: undefined
+			})
+		})
 
 		if (uploadData.ptv) {
 			obj.ptvMessage = obj.videoMessage
